@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import axios from "axios";
+import LoadingMask from "./loader.svg";
 
 const App = () => {
   const [advice, setAdvice] = useState("");
+  const [showLoadingMask, setShowLoadingMask] = useState(false);
   useEffect(() => {
+    setShowLoadingMask(true);
     fetchAdvice();
   }, []);
   const fetchAdvice = () => {
@@ -13,6 +16,7 @@ const App = () => {
       .then((response) => {
         const { advice } = response.data.slip;
         setAdvice(advice);
+        setShowLoadingMask(false);
       })
       .catch((error) => {
         console.log(error);
@@ -21,10 +25,15 @@ const App = () => {
   return (
     <div className="app">
       <div className="card">
-        <h1 className="heading">{advice}</h1>
+        {showLoadingMask ? (
+          <img className="loading-mask" src={LoadingMask} alt="loadingMask" />
+        ) : (
+          <h1 className="heading">{advice}</h1>
+        )}
         <button
           className="button"
           onClick={() => {
+            setShowLoadingMask(true);
             fetchAdvice();
           }}
         >
